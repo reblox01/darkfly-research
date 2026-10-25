@@ -1,0 +1,1123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>DarkFly Next-Gen Research</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f3f5f1;
+        --bg-raise: #ffffff;
+        --bg-sink: #e9ede6;
+        --ink: #15211a;
+        --ink-soft: #3c4a40;
+        --muted: #67766a;
+        --line: #d3dbd0;
+        --line-strong: #b7c2b2;
+        --accent: #0c7a3e;
+        --accent-ink: #ffffff;
+        --accent-soft: #dff2e4;
+        --amber: #9a6206;
+        --amber-soft: #f8ecd2;
+        --red: #b3352c;
+        --red-soft: #f9e2df;
+        --term-bg: #0c110d;
+        --term-ink: #c9e7cd;
+        --term-dim: #7fae87;
+        --term-accent: #4ade80;
+        --term-amber: #fbbf24;
+        --shadow: 0 1px 2px rgba(21, 33, 26, 0.06), 0 8px 24px rgba(21, 33, 26, 0.06);
+        --radius: 10px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0a0e0b;
+          --bg-raise: #121712;
+          --bg-sink: #0e130e;
+          --ink: #e6efe4;
+          --ink-soft: #c2cfc0;
+          --muted: #8b9c8d;
+          --line: #263026;
+          --line-strong: #3a4a3a;
+          --accent: #4ade80;
+          --accent-ink: #07130b;
+          --accent-soft: #17301f;
+          --amber: #f0b64a;
+          --amber-soft: #33270e;
+          --red: #f08a80;
+          --red-soft: #3a1a16;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        * { animation: none !important; transition: none !important; }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16.5px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2, h3, .disp {
+        font-family: "Chakra Petch", "IBM Plex Sans", sans-serif;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+      }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace; }
+      a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+      a:hover { text-decoration-thickness: 2px; }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+      /* ---------- nav ---------- */
+      nav.topnav {
+        position: sticky; top: 0; z-index: 40;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line);
+      }
+      .topnav .wrap { display: flex; gap: 4px; overflow-x: auto; padding-top: 0; padding-bottom: 0; scrollbar-width: none; }
+      .topnav .wrap::-webkit-scrollbar { display: none; }
+      .topnav a {
+        color: var(--ink-soft); text-decoration: none; white-space: nowrap;
+        font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-weight: 500;
+        padding: 12px 10px; border-bottom: 2px solid transparent;
+      }
+      .topnav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+      /* ---------- hero ---------- */
+      header.hero { padding: 56px 0 8px; }
+      .kicker {
+        font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-weight: 600;
+        letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+        display: flex; align-items: center; gap: 10px; margin: 0 0 18px;
+      }
+      .kicker::before { content: ""; width: 26px; height: 2px; background: var(--accent); display: inline-block; }
+      h1 { font-size: clamp(34px, 6vw, 58px); font-weight: 700; margin: 0 0 20px; max-width: 16ch; }
+      h1 .hl { color: var(--accent); }
+      .lede { font-size: clamp(17px, 2.4vw, 20px); color: var(--ink-soft); max-width: 68ch; margin: 0 0 14px; }
+      .lede strong { color: var(--ink); }
+      .verdict {
+        border-left: 3px solid var(--accent); background: var(--accent-soft);
+        padding: 16px 20px; border-radius: 0 var(--radius) var(--radius) 0;
+        max-width: 78ch; margin: 26px 0 8px; font-size: 16px;
+      }
+      .verdict p { margin: 0; }
+      .statgrid {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 34px 0 10px;
+      }
+      .stat {
+        background: var(--bg-raise); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 18px 18px 14px; box-shadow: var(--shadow);
+      }
+      .stat .num { font-family: "Chakra Petch", sans-serif; font-size: clamp(26px, 3.6vw, 36px); font-weight: 700; line-height: 1; }
+      .stat .num small { font-size: 0.55em; font-weight: 600; color: var(--muted); }
+      .stat .lbl { font-size: 13.5px; color: var(--muted); margin-top: 8px; line-height: 1.45; }
+      .stat .lbl b { color: var(--ink-soft); font-weight: 600; }
+
+      /* ---------- sections ---------- */
+      section { padding: 52px 0 6px; }
+      .sec-head { margin-bottom: 22px; }
+      .sec-head .no {
+        font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-weight: 600;
+        color: var(--accent); letter-spacing: 0.12em;
+      }
+      h2 { font-size: clamp(25px, 4vw, 34px); font-weight: 700; margin: 6px 0 10px; }
+      .sec-head p { color: var(--ink-soft); max-width: 74ch; margin: 0; }
+      h3 { font-size: 19px; font-weight: 600; margin: 30px 0 10px; }
+
+      .card {
+        background: var(--bg-raise); border: 1px solid var(--line);
+        border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px;
+      }
+      .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+      .tag {
+        display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600;
+        padding: 2px 8px; border-radius: 999px; letter-spacing: 0.04em; vertical-align: middle;
+      }
+      .tag.green { background: var(--accent-soft); color: var(--accent); }
+      .tag.amber { background: var(--amber-soft); color: var(--amber); }
+      .tag.red { background: var(--red-soft); color: var(--red); }
+      .tag.plain { background: var(--bg-sink); color: var(--muted); }
+
+      .src { font-size: 12.5px; color: var(--muted); }
+      .src a { color: var(--muted); }
+      .src a:hover { color: var(--accent); }
+
+      /* ---------- landscape table ---------- */
+      .tblwrap { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-raise); box-shadow: var(--shadow); }
+      table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+      thead th {
+        text-align: left; font-family: "IBM Plex Mono", monospace; font-size: 11.5px; font-weight: 600;
+        letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+        padding: 12px 14px; border-bottom: 1px solid var(--line-strong); background: var(--bg-sink);
+      }
+      tbody td { padding: 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      tbody tr:last-child td { border-bottom: none; }
+      tbody tr.hl-row { background: var(--accent-soft); }
+      td .pname { font-weight: 700; font-family: "Chakra Petch", sans-serif; font-size: 15px; }
+      td .sig { display: block; font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+
+      /* ---------- workflow chain ---------- */
+      .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 4px; }
+      .chain .step {
+        background: var(--bg-sink); border: 1px solid var(--line); border-radius: 8px;
+        padding: 7px 12px; font-size: 13.5px; font-weight: 600;
+      }
+      .chain .step span { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+      .chain .arr { color: var(--accent); font-family: "IBM Plex Mono", monospace; font-weight: 600; }
+
+      /* ---------- catalog ---------- */
+      .cat-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+      .chip {
+        font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-weight: 600;
+        border: 1px solid var(--line-strong); background: var(--bg-raise); color: var(--ink-soft);
+        border-radius: 999px; padding: 7px 14px; cursor: pointer;
+      }
+      .chip:hover { border-color: var(--accent); color: var(--accent); }
+      .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      .cat-search {
+        flex: 1 1 220px; min-width: 180px;
+        font-family: "IBM Plex Mono", monospace; font-size: 14px;
+        padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line-strong);
+        background: var(--bg-raise); color: var(--ink);
+      }
+      .cat-search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+      .cat-count { font-family: "IBM Plex Mono", monospace; font-size: 12.5px; color: var(--muted); margin: 0 0 12px; }
+      .catgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .tool {
+        background: var(--bg-raise); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 15px 16px 13px; box-shadow: var(--shadow);
+      }
+      .tool h4 { margin: 0 0 2px; font-family: "Chakra Petch", sans-serif; font-size: 16px; font-weight: 600; }
+      .tool .cat { font-size: 12.5px; color: var(--muted); font-family: "IBM Plex Mono", monospace; }
+      .tool p { font-size: 13.5px; color: var(--ink-soft); margin: 8px 0 10px; line-height: 1.5; }
+      .tool .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+
+      /* ---------- charts ---------- */
+      .chart-card { padding: 22px; }
+      .chart-card h3 { margin-top: 0; }
+      .chart-note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+      .caveat {
+        border: 1px dashed var(--amber); background: var(--amber-soft); border-radius: var(--radius);
+        padding: 14px 18px; font-size: 14.5px; margin-top: 16px;
+      }
+      .caveat b { color: var(--amber); }
+
+      /* ---------- blueprint ---------- */
+      .rank-list { display: flex; flex-direction: column; gap: 12px; }
+      .rank {
+        display: grid; grid-template-columns: 52px 1fr auto; gap: 16px; align-items: start;
+        background: var(--bg-raise); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 18px 20px; box-shadow: var(--shadow);
+      }
+      .rank .n {
+        font-family: "Chakra Petch", sans-serif; font-size: 30px; font-weight: 700; color: var(--accent);
+        line-height: 1; padding-top: 2px;
+      }
+      .rank h4 { margin: 0 0 5px; font-family: "Chakra Petch", sans-serif; font-size: 17px; font-weight: 600; }
+      .rank p { margin: 0; font-size: 14.5px; color: var(--ink-soft); }
+      .rank .ie { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+      .ladder { display: flex; flex-direction: column; gap: 0; }
+      .rung {
+        display: grid; grid-template-columns: 34px 190px 1fr; gap: 14px; align-items: baseline;
+        padding: 12px 4px; border-bottom: 1px dashed var(--line);
+      }
+      .rung:last-child { border-bottom: none; }
+      .rung .rn { font-family: "IBM Plex Mono", monospace; font-weight: 600; color: var(--accent); }
+      .rung .rb { font-weight: 700; font-family: "IBM Plex Mono", monospace; font-size: 14px; }
+      .rung .rd { font-size: 14.5px; color: var(--ink-soft); }
+
+      pre.code {
+        background: var(--term-bg); color: var(--term-ink); border-radius: var(--radius);
+        padding: 18px 20px; overflow-x: auto; font-family: "IBM Plex Mono", monospace;
+        font-size: 13px; line-height: 1.65; margin: 0; white-space: pre-wrap; word-break: break-word;
+      }
+      pre.code .k { color: var(--term-accent); }
+      pre.code .s { color: var(--term-amber); }
+
+      .checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+      .checklist li {
+        background: var(--bg-raise); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 13px 16px 13px 44px; position: relative; font-size: 15px; box-shadow: var(--shadow);
+      }
+      .checklist li::before {
+        content: "✓"; position: absolute; left: 14px; top: 12px;
+        width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: var(--accent-ink);
+        font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+      }
+      .checklist li b { font-weight: 600; }
+
+      /* ---------- terminal sim ---------- */
+      .terminal {
+        background: var(--term-bg); border-radius: 12px; overflow: hidden;
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35); border: 1px solid #223324;
+      }
+      .term-bar {
+        display: flex; align-items: center; gap: 8px; padding: 11px 14px;
+        background: #131a13; border-bottom: 1px solid #223324;
+      }
+      .term-bar .dot { width: 11px; height: 11px; border-radius: 50%; }
+      .term-bar .t { margin-left: 8px; font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--term-dim); }
+      .term-body {
+        padding: 18px 20px 20px; font-family: "IBM Plex Mono", monospace; font-size: 13.5px;
+        line-height: 1.7; color: var(--term-ink); min-height: 300px; white-space: pre-wrap; word-break: break-word;
+      }
+      .term-body .cmd { color: #ffffff; font-weight: 600; }
+      .term-body .ok { color: var(--term-accent); }
+      .term-body .warn { color: var(--term-amber); }
+      .term-body .dim { color: var(--term-dim); }
+      .sim-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+      .sim-btn {
+        font-family: "IBM Plex Mono", monospace; font-size: 12.5px; font-weight: 600;
+        background: var(--bg-raise); color: var(--ink-soft); border: 1px solid var(--line-strong);
+        border-radius: 8px; padding: 9px 13px; cursor: pointer;
+      }
+      .sim-btn:hover { border-color: var(--accent); color: var(--accent); }
+      .sim-btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+      /* ---------- vm bench ---------- */
+      .bench { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+      .benchline { display: flex; gap: 10px; align-items: baseline; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+      .benchline:last-child { border-bottom: none; }
+      .benchline .st { font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; flex: 0 0 auto; }
+      .st.pass { color: var(--accent); }
+      .st.info { color: var(--muted); }
+      .st.gap { color: var(--amber); }
+
+      .trap-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .trap {
+        border: 1px solid var(--line); border-left: 3px solid var(--red); border-radius: var(--radius);
+        background: var(--bg-raise); padding: 15px 18px; box-shadow: var(--shadow);
+      }
+      .trap h4 { margin: 0 0 4px; font-family: "Chakra Petch", sans-serif; font-size: 15.5px; font-weight: 600; }
+      .trap p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+
+      .openq { display: flex; flex-direction: column; gap: 12px; }
+      .openq .q {
+        border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 15px 18px;
+        background: var(--bg-sink); font-size: 15px;
+      }
+      .openq .q b { font-family: "Chakra Petch", sans-serif; }
+
+      footer { margin-top: 60px; border-top: 1px solid var(--line); padding: 26px 0 44px; }
+      footer p { font-size: 13.5px; color: var(--muted); max-width: 80ch; }
+      .src-list { columns: 2; column-gap: 34px; font-size: 14px; }
+      .src-list li { margin-bottom: 7px; break-inside: avoid; }
+      .src-group { font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 20px 0 8px; }
+      ul.tight { margin: 8px 0; padding-left: 20px; }
+      ul.tight li { margin-bottom: 6px; }
+
+      @media (max-width: 900px) {
+        .statgrid { grid-template-columns: 1fr 1fr; }
+        .grid3, .catgrid { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 680px) {
+        body { font-size: 16px; }
+        .topnav .wrap { flex-wrap: wrap; overflow-x: visible; row-gap: 0; }
+        .topnav a { padding: 9px 8px; }
+        .grid2, .grid3, .catgrid, .bench, .trap-list { grid-template-columns: 1fr; }
+        .rank { grid-template-columns: 38px 1fr; }
+        .rank .ie { grid-column: 2; flex-direction: row; align-items: flex-start; }
+        .rung { grid-template-columns: 26px 1fr; }
+        .rung .rd { grid-column: 2; }
+        .src-list { columns: 1; }
+        /* landscape table -> stacked cards */
+        .tblwrap { border: none; background: transparent; box-shadow: none; overflow: visible; }
+        table, tbody, tr, td { display: block; width: 100%; }
+        thead { display: none; }
+        tbody tr {
+          background: var(--bg-raise); border: 1px solid var(--line); border-radius: var(--radius);
+          box-shadow: var(--shadow); margin-bottom: 12px; padding: 6px 4px;
+        }
+        tbody tr.hl-row { background: var(--accent-soft); }
+        tbody td { border-bottom: 1px dashed var(--line); padding: 10px 14px; }
+        tbody td:last-child { border-bottom: none; }
+        tbody td::before {
+          content: attr(data-l); display: block; font-family: "IBM Plex Mono", monospace;
+          font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+          color: var(--muted); margin-bottom: 3px;
+        }
+        tbody td:first-child::before { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="topnav" aria-label="Sections">
+      <div class="wrap">
+        <a href="#verdict">Verdict</a>
+        <a href="#landscape">Landscape</a>
+        <a href="#practice">In practice</a>
+        <a href="#catalog">Catalog</a>
+        <a href="#benchmarks">Benchmarks</a>
+        <a href="#blueprint">Blueprint</a>
+        <a href="#simulate">Simulation</a>
+        <a href="#termux">Termux</a>
+        <a href="#traps">Traps</a>
+        <a href="#open">Open questions</a>
+        <a href="#sources">Sources</a>
+      </div>
+    </nav>
+
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+      <div class="wrap">
+        <p class="kicker">Design brief · Researched 23 Oct 2026</p>
+        <h1>DarkFly, rebuilt: <span class="hl">fewer tools,</span> real installs.</h1>
+        <p class="lede">
+          Deep research into the modern tool-installer landscape, practitioner blogs and hacker-community
+          benchmarks, plus a hands-on baseline test of the current version in a VM. The conclusion is blunt:
+          <strong>the classic DarkFly model is dead, and practitioners have already replaced it.</strong>
+          DarkFly v4, Tool-X, AllHackingTools, Lazymux and Katoolin all share one design, a numbered menu over
+          hundreds of hard-coded repos, installed with <span class="mono">git clone</span> and Python 2, with no
+          pinning, no uninstall and no verification. They share the same failure modes too.
+        </p>
+        <div class="verdict">
+          <p>
+            <strong>The replacement model, agreed by Kali, Black Hills Information Security, ProjectDiscovery,
+            SpecterOps and Exegol:</strong> a small curated catalog, installs through a real package manager
+            wherever possible, and every install pinned, recorded and reproducible. This page is the blueprint
+            for building DarkFly that way.
+          </p>
+        </div>
+        <div class="statgrid">
+          <div class="stat">
+            <div class="num">530</div>
+            <div class="lbl"><b>Tools claimed by DarkFly v4</b>, hard-coded in Python 2, plus 7 SMS-spam tools. The count was the product.</div>
+          </div>
+          <div class="stat">
+            <div class="num">8</div>
+            <div class="lbl"><b>Tools in the current v5 catalog</b>, verified in a VM test: nmap, whois, dnsenum, nikto, sqlmap, hydra, john, aircrack-ng.</div>
+          </div>
+          <div class="stat">
+            <div class="num">60–100</div>
+            <div class="lbl"><b>Proposed catalog size</b>: the practitioner core plus the modern layer, each entry maintained and verified, not 530.</div>
+          </div>
+          <div class="stat">
+            <div class="num">74,307<small> ★</small></div>
+            <div class="lbl"><b>SecLists</b>, the most-starred resource in this research, is not a tool at all. It is a curated collection of lists.</div>
+          </div>
+        </div>
+        <p class="src">Star counts are point-in-time readings from the web index on 2026-10-23 and will drift. Research confidence: high for the landscape, patterns, safety and Termux findings; medium-low for all published speed benchmarks, which are self-reported (see <a href="#benchmarks">Benchmarks</a>).</p>
+      </div>
+    </header>
+
+    <!-- ================= VERDICT ================= -->
+    <section id="verdict">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">01 / THE VERDICT</span>
+          <h2>Why the numbered menu died</h2>
+          <p>Every classic installer fails the same five ways. Each one is documented, not opinion, and each maps to a design rule for the new version.</p>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h3 style="margin-top:0">The five failure modes</h3>
+            <ul class="tight">
+              <li><strong>Python 2 end-of-life.</strong> It killed Katoolin and DarkFly v4 outright; v4's own README admits <em>"the DarkFly tools on linux does not working"</em>, and updating means a full reinstall that deletes the old files.</li>
+              <li><strong>Dead and renamed upstreams.</strong> CrackMapExec was archived in 2023 and replaced by NetExec. Every catalog still pointing at the old name silently broke, and instantly dates itself.</li>
+              <li><strong>Host breakage.</strong> Katoolin adds Kali's rolling repos to a stable Ubuntu or Mint host with no safety checks, leading to <em>"unresolvable dependency conflicts which will finally break"</em> the system.</li>
+              <li><strong>Opaque trust leaps.</strong> A clone plus a setup script is arbitrary code execution, repeated hundreds of times. AllHackingTools even fetches a remote config token from GitHub before its menu opens.</li>
+              <li><strong>No record of anything.</strong> No pinning, no manifest, no uninstall. Nobody can say what was installed, at what version, or how to remove it.</li>
+            </ul>
+            <p class="src">Sources: <a href="https://github.com/Ranginang67/DarkFly-Tool">DarkFly v4 repo</a> · <a href="https://forums.linuxmint.com/viewtopic.php?f=208&t=227423&p=1353854&hilit=Katoolin">Linux Mint forum, Katoolin breakage</a> · <a href="https://github.com/mishakorzik/AllHackingTools/blob/main/.check/Configuration.py">AllHackingTools remote config check</a></p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">The three rules of the new model</h3>
+            <ul class="tight">
+              <li><strong>Curate, don't accumulate.</strong> Kali curates through metapackages and a top-10 list. BHIS peer-reviewed cheatsheets cover only about 9 core tools. EC-Council's beginner answer is 4 tools plus a lab platform.</li>
+              <li><strong>Install through real package managers.</strong> Signed <span class="mono">apt/pkg</span> packages, isolated <span class="mono">pipx</span> environments, <span class="mono">go install</span>, or a vendor's own manager like ProjectDiscovery's <span class="mono">pdtm</span>. Not raw clones.</li>
+              <li><strong>Pin, record, reproduce.</strong> Exegol pins an image generation so a retest six months later runs the same stack. AD playbooks record the tool version alongside the evidence. A manifest file does the same job on a phone.</li>
+            </ul>
+            <p class="src">Sources: <a href="https://www.kali.org/docs/general-use/metapackages/">Kali metapackages</a> · <a href="https://www.blackhillsinfosec.com/offensive-tooling-cheatsheets/">BHIS cheatsheets</a> · <a href="https://docs.exegol.com/blog/compliance-as-a-feature">Exegol on reproducibility</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LANDSCAPE ================= -->
+    <section id="landscape">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">02 / COMPETITIVE LANDSCAPE</span>
+          <h2>Who else does this, and why users leave</h2>
+          <p>The clone field is saturated: a new entrant cannot win on "more tools, new banner". The projects practitioners actually respect solve a different problem: curation, signed packages, and lifecycle management.</p>
+        </div>
+        <div class="tblwrap">
+          <table>
+            <thead>
+              <tr><th>Project</th><th>Catalog</th><th>Install method</th><th>UX</th><th>Why users like / abandon it</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-l="Project"><span class="pname">DarkFly v4</span><span class="sig">1,980 ★ · 407 forks · 0 releases · since 2018</span></td>
+                <td data-l="Catalog">Hard-coded, partly obfuscated in Python 2; 530 tools claimed + 7 SMS-spam tools</td>
+                <td data-l="Install"><span class="mono">pkg install python2 git</span>, then pick by number</td>
+                <td data-l="UX">Numbered menu: show all / about / uninstall / exit</td>
+                <td data-l="Verdict">Liked for zero searching. Abandoned: Python 2, Linux path broken per its own README, updates delete the old install.</td>
+              </tr>
+              <tr class="hl-row">
+                <td data-l="Project"><span class="pname">DarkFly v5 (current)</span><span class="sig">131 ★ · 30 forks · 2 releases · Python 3.10+</span></td>
+                <td data-l="Catalog">Small JSON catalog, config-driven and extensible</td>
+                <td data-l="Install">None yet for listed tools: <span class="mono">list</span> / <span class="mono">info</span> show <em>suggested</em> commands only</td>
+                <td data-l="UX">CLI subcommands + simple menu</td>
+                <td data-l="Verdict">The right direction (Python 3, JSON, Linux + Termux), but it does not actually install, has no search, and only 8 entries today.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">Tool-X</span><span class="sig">Star count not verified, see open questions</span></td>
+                <td data-l="Catalog">Hard-coded list, 370–377 tools claimed, by category</td>
+                <td data-l="Install"><span class="mono">git clone</span> + per-tool clone/apt scripts</td>
+                <td data-l="UX">Numbered menu</td>
+                <td data-l="Verdict">Same one-click promise, same failure modes. The canonical clone URL itself drifts between authors (<span class="mono">Rajkumrdusad</span> in old guides, <span class="mono">ekadanuarta</span> in 2025 guides), a supply-chain smell in itself.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">AllHackingTools</span><span class="sig">~2.2 GB installed footprint claimed</span></td>
+                <td data-l="Catalog">Categorised menu, 370+ tools claimed</td>
+                <td data-l="Install"><span class="mono">bash Install.sh</span>; clones into a central Tools dir</td>
+                <td data-l="UX">Categorised menu + Termux theming</td>
+                <td data-l="Verdict">Illustrates a red flag: it fetches a remote <span class="mono">system.txt</span> token and compares it before the menu even opens. Exactly what a trustworthy installer must never do silently.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">ALHacking</span><span class="sig">18 fixed menu options</span></td>
+                <td data-l="Catalog">One menu slot per tool: zphisher, CamPhish, DDoS-Ripper, RED_HAWK, Facebash…</td>
+                <td data-l="Install">Clone into Tools dir, install deps, run with bash/python/php</td>
+                <td data-l="UX">Single numbered menu, 1–18</td>
+                <td data-l="Verdict">Shows the genre's skew: menu space goes to phishing, webcam and DDoS tools instead of the practitioner core. A curation and GitHub-policy liability.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">Katoolin</span><span class="sig">266 open issues, 38 PRs, no maintainer response</span></td>
+                <td data-l="Catalog">Kali repo categories bolted onto a Debian/Ubuntu host</td>
+                <td data-l="Install">Adds Kali APT repos + <span class="mono">apt-key</span>, installs by category number</td>
+                <td data-l="UX">Numbered menu</td>
+                <td data-l="Verdict">Effectively dead (requires Python 2.7). The cautionary tale: foreign rolling repos, no safety checks, broken hosts. Modern guides recommend Docker instead.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">Kali Linux</span><span class="sig">Official distribution</span></td>
+                <td data-l="Catalog"><strong>Curated metapackages</strong>, not a flat list: <span class="mono">kali-tools-web</span>, <span class="mono">kali-tools-passwords</span>, <span class="mono">kali-tools-top10</span>, up to <span class="mono">kali-linux-everything</span></td>
+                <td data-l="Install">Signed Debian packages via <span class="mono">apt</span>; dependency resolution, upgrade and removal are APT's job</td>
+                <td data-l="UX"><span class="mono">apt install kali-tools-web</span>, or the <span class="mono">kali-tweaks</span> menu</td>
+                <td data-l="Verdict">The credible reference design for curation: install a category or the top 10, not everything. <span class="mono">everything</span> exists but is explicitly the heavy option.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">BlackArch</span><span class="sig">2,700+ tools per secondary guides</span></td>
+                <td data-l="Catalog">Pacman groups: <span class="mono">blackarch-webapp</span>, <span class="mono">blackarch-scanner</span>, <span class="mono">blackarch-wireless</span>…</td>
+                <td data-l="Install">Signed pacman repo + keyring; or build from PKGBUILDs with <span class="mono">blackman</span></td>
+                <td data-l="UX">CLI package manager</td>
+                <td data-l="Verdict">Proves a huge catalog <em>can</em> work, but only by becoming a real distro repo with packaging and maintainers per package. That cost is the lesson.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">pdtm (ProjectDiscovery)</span><span class="sig">The modern model to copy</span></td>
+                <td data-l="Catalog">Single-vendor catalog, ~20 Go tools (Nuclei, Subfinder, httpx, Naabu, Katana…), cached with a fallback when the GitHub API is down</td>
+                <td data-l="Install">Pre-built GitHub-release binaries per OS/arch, or <span class="mono">go install</span> fallback; manages PATH</td>
+                <td data-l="UX"><span class="mono">pdtm -ia</span> install all · <span class="mono">-ua</span> update all · <span class="mono">-l</span> list installed + outdated · per-tool remove</td>
+                <td data-l="Verdict">What "good" looks like in 2025: narrow scope, one vendor, binary releases, real update, remove and outdated-listing. A new DarkFly should delegate ProjectDiscovery tools to pdtm, not re-clone them.</td>
+              </tr>
+              <tr>
+                <td data-l="Project"><span class="pname">Exegol</span><span class="sig">Documented, versioned Docker images</span></td>
+                <td data-l="Catalog">Tools installed "under installation standards (isolated environments, tested installs)"</td>
+                <td data-l="Install">Docker images/containers; one image, many clean containers per engagement</td>
+                <td data-l="UX">CLI container management; optional MCP server</td>
+                <td data-l="Verdict">Practitioners accept the Docker weight on desktop for reproducibility: <em>"Alice's Kali with random Git checkouts does not survive methodology review."</em> Not viable on Termux (no real Docker): copy the principles, not the mechanism.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="src" style="margin-top:12px">Full per-project sources in <a href="#sources">Sources</a>. Note on classification: Nexfil, sometimes listed beside these projects, is not an installer at all. It is a single OSINT username-finder; it belongs <em>inside</em> a catalog as one entry.</p>
+      </div>
+    </section>
+
+    <!-- ================= PRACTICE ================= -->
+    <section id="practice">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">03 / IN PRACTICE</span>
+          <h2>What practitioners actually use</h2>
+          <p>Cyber blogs, cheatsheets and community benchmarks converge on the same small core, organised by workflow phase rather than alphabetically. Kali 2025.2 even reorganised its own menu around MITRE ATT&amp;CK.</p>
+        </div>
+        <div class="grid3">
+          <div class="card">
+            <h3 style="margin-top:0">Depth on a few tools</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">Black Hills Information Security's <em>Offensive Tooling Cheatsheets</em> went through "careful technical peer review" and "double- and triple-checking syntax", and cover only <strong style="color:var(--ink)">nine tools</strong>: Burp Suite, DNS Triage, EyeWitness, GraphRunner, Hashcat, Impacket, Netcat, Nmap, Wireshark. They moved from print to updatable digital "as tools and technologies shift".</p>
+            <p class="src" style="margin-top:10px"><a href="https://www.blackhillsinfosec.com/offensive-tooling-cheatsheets/">blackhillsinfosec.com</a></p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">The 80% answer is tiny</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">EC-Council's 2026 beginner toolkit is deliberately minimal: <strong style="color:var(--ink)">Kali + Nmap + Burp Community + Metasploit + HackTheBox / TryHackMe</strong>, which "covers 80% of what professional pentesters use". Meanwhile Kali's own <span class="mono">kali-tools-top10</span> is Nmap, Wireshark, Burp, sqlmap, Metasploit, Hydra, John, Responder, NetExec and Aircrack-ng.</p>
+            <p class="src" style="margin-top:10px"><a href="https://www.eccouncil.org/cybersecurity-exchange/ethical-hacking/best-ethical-hacking-tools/">eccouncil.org</a> · <a href="https://www.kali.org/docs/general-use/metapackages/">kali.org</a></p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">Resources are a catalog too</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">SecLists (74,307 ★) is maintained by named people, Daniel Miessler, Jason Haddix, Ignacio Portal and g0tmi1k, so a tester can "pull this repository onto a new testing box and have access to every type of list that may be needed". Wordlists and references like PayloadsAllTheThings and HackTricks carry the same value as tools, at a fraction of the install risk.</p>
+            <p class="src" style="margin-top:10px"><a href="https://github.com/danielmiessler/SecLists">github.com/danielmiessler/SecLists</a></p>
+          </div>
+        </div>
+
+        <h3>The workflow order a catalog should follow</h3>
+        <div class="chain" aria-label="Pentest workflow phases">
+          <div class="step">Recon<span>whois · Subfinder · theHarvester</span></div><span class="arr">→</span>
+          <div class="step">Scanning<span>Nmap · RustScan</span></div><span class="arr">→</span>
+          <div class="step">Vuln scan<span>Nuclei · Nikto</span></div><span class="arr">→</span>
+          <div class="step">Web<span>ffuf · sqlmap · Burp</span></div><span class="arr">→</span>
+          <div class="step">Credentials<span>Hydra · Hashcat · John · NetExec</span></div><span class="arr">→</span>
+          <div class="step">Exploitation<span>Metasploit · searchsploit</span></div><span class="arr">→</span>
+          <div class="step">Post-exploitation<span>LinPEAS · WinPEAS</span></div><span class="arr">→</span>
+          <div class="step">Active Directory<span>BloodHound · Impacket · Certipy</span></div><span class="arr">→</span>
+          <div class="step">Pivoting<span>Ligolo · Chisel · proxychains</span></div>
+        </div>
+        <p class="src">Chain synthesised from HTB-style practitioner cheatsheets: <a href="http://awjunaid.com/ethical-hacking/extended-penetration-testing-cheatsheet">awjunaid.com</a>. Two more practice signals: trust attaches to a tool's own maintainer (TrustedSec's tools are consumed as individual repos, never via installers), and enterprise packaging is the trend, BloodHound CE ships containerised with an ~80% deployment-time cut (<a href="https://www.helpnetsecurity.com/2023/08/02/bloodhound-ce-open-source-penetration-testing-tool/">Help Net Security</a>). On Termux that means shipping the BloodHound <em>collectors</em>, never the server.</p>
+      </div>
+    </section>
+
+    <!-- ================= CATALOG ================= -->
+    <section id="catalog">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">04 / THE NEW CATALOG</span>
+          <h2>Four tiers, every entry accounted for</h2>
+          <p>The proposed catalog, built from the research: the timeless core, the modern layer classic DarkFly lacks entirely, resources treated as first-class entries, and a small clearly-labelled emerging tier. Filter by tier or search. <span class="mono">Backend</span> is how the new installer would install it; <span class="mono">Termux</span> flags what is honest to promise on a phone.</p>
+        </div>
+        <div class="cat-controls">
+          <div class="chips" role="group" aria-label="Filter catalog by tier">
+            <button class="chip" data-tier="all" aria-pressed="true">All tiers</button>
+            <button class="chip" data-tier="0" aria-pressed="false">Tier 0 · Core</button>
+            <button class="chip" data-tier="1" aria-pressed="false">Tier 1 · Modern</button>
+            <button class="chip" data-tier="2" aria-pressed="false">Tier 2 · Resources</button>
+            <button class="chip" data-tier="3" aria-pressed="false">Tier 3 · Emerging</button>
+          </div>
+          <input class="cat-search" id="catSearch" type="search" placeholder="Search tools, e.g. nuclei, ad, fuzz…" aria-label="Search the proposed catalog" />
+        </div>
+        <p class="cat-count" id="catCount"></p>
+        <div class="catgrid" id="catGrid"></div>
+        <p class="src" style="margin-top:14px">Explicitly excluded, by design: SMS/call bombers and spam tools (v4's headline "7 SMS spam tools"), Gmail bombers, webcam-phishing and DDoS-Ripper-style entries, and any tool whose upstream is archived with a named successor. Their absence is a differentiator, and the README should say so.</p>
+      </div>
+    </section>
+
+    <!-- ================= BENCHMARKS ================= -->
+    <section id="benchmarks">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">05 / BENCHMARKS, WITH THEIR CAVEATS</span>
+          <h2>What the blogs claim, and what survives scrutiny</h2>
+          <p>Practitioner comparison numbers are useful for one thing: deciding which tools belong side by side in the catalog. They are not catalog facts, and the new project should never quote them as such.</p>
+        </div>
+        <div class="grid2">
+          <div class="card chart-card">
+            <h3>Full port scan, one host, all 65,535 ports</h3>
+            <p style="margin:0 0 14px; font-size:14px; color:var(--ink-soft)">Gigabit LAN, Kali 2025.1. Log scale, seconds to finish. The lesson: ship Nmap <em>and</em> RustScan, and document the combined workflow. Speed without service detection is not a finished scan.</p>
+            <svg viewBox="0 0 520 218" width="100%" role="img" aria-label="Bar chart on a log scale: Nmap full scan about 1260 seconds, Masscan about 45 seconds, RustScan plus Nmap about 35 seconds, RustScan discovery only about 3 seconds" style="display:block">
+              <!-- plot area x: 118..500 ; log10 scale 0..3.2 mapped -->
+              <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--muted)">
+                <line x1="118" y1="12" x2="118" y2="182" stroke="var(--line-strong)" stroke-width="1"/>
+                <line x1="237.4" y1="12" x2="237.4" y2="182" stroke="var(--line)" stroke-width="1"/>
+                <line x1="356.8" y1="12" x2="356.8" y2="182" stroke="var(--line)" stroke-width="1"/>
+                <line x1="476.1" y1="12" x2="476.1" y2="182" stroke="var(--line)" stroke-width="1"/>
+                <text x="118" y="198" text-anchor="middle">1s</text>
+                <text x="237.4" y="198" text-anchor="middle">10s</text>
+                <text x="356.8" y="198" text-anchor="middle">100s</text>
+                <text x="476.1" y="198" text-anchor="middle">1000s</text>
+                <text x="118" y="212" text-anchor="middle">log scale</text>
+              </g>
+              <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="var(--ink)">
+                <text x="0" y="37">Nmap -p-</text>
+                <rect x="118" y="22" width="370.3" height="20" rx="4" fill="var(--muted)"/>
+                <text x="494" y="37" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink)" font-weight="600">~21 min</text>
+                <text x="0" y="79">Masscan</text>
+                <rect x="118" y="64" width="197.5" height="20" rx="4" fill="var(--accent)"/>
+                <text x="322" y="79" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">~45 s</text>
+                <text x="0" y="121">RustScan + Nmap</text>
+                <rect x="118" y="106" width="184.5" height="20" rx="4" fill="var(--accent)"/>
+                <text x="309" y="121" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">~35 s</text>
+                <text x="0" y="163">RustScan only</text>
+                <rect x="118" y="148" width="57" height="20" rx="4" fill="var(--amber)"/>
+                <text x="181" y="163" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">~3 s, discovery only</text>
+              </g>
+            </svg>
+            <p class="chart-note">Source: <a href="https://securityelites.com/nmap-vs-masscan-vs-rustscan-2026/">securityelites.com</a>, self-reported. A comparative study reaches the same qualitative split: Nmap is the depth/NSE standard, Masscan/ZMap are internet-scale speed with accuracy trade-offs (<a href="https://sol.sbc.org.br/index.php/latinoware/article/download/41039/40809/">Latinoware study</a>).</p>
+          </div>
+          <div class="card chart-card">
+            <h3>Web fuzzers, local throughput</h3>
+            <p style="margin:0 0 14px; font-size:14px; color:var(--ink-soft)">Requests per second in one local benchmark. On real internet targets "the difference is minimal", so the catalog carries all three with a one-line "use when" each. Wordlist choice dominates results, which is why SecLists is a Tier 2 entry.</p>
+            <svg viewBox="0 0 520 218" width="100%" role="img" aria-label="Bar chart: ffuf about 1400 requests per second, feroxbuster about 950, Gobuster about 500" style="display:block">
+              <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--muted)">
+                <line x1="118" y1="12" x2="118" y2="182" stroke="var(--line-strong)" stroke-width="1"/>
+                <line x1="230.5" y1="12" x2="230.5" y2="182" stroke="var(--line)" stroke-width="1"/>
+                <line x1="343" y1="12" x2="343" y2="182" stroke="var(--line)" stroke-width="1"/>
+                <line x1="455.5" y1="12" x2="455.5" y2="182" stroke="var(--line)" stroke-width="1"/>
+                <text x="118" y="198" text-anchor="middle">0</text>
+                <text x="230.5" y="198" text-anchor="middle">500</text>
+                <text x="343" y="198" text-anchor="middle">1000</text>
+                <text x="455.5" y="198" text-anchor="middle">1500</text>
+                <text x="118" y="212" text-anchor="middle">req/s</text>
+              </g>
+              <g font-family="IBM Plex Sans, sans-serif" font-size="12.5" fill="var(--ink)">
+                <text x="0" y="37">ffuf</text>
+                <rect x="118" y="22" width="315" height="20" rx="4" fill="var(--accent)"/>
+                <text x="439" y="37" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">~1,400</text>
+                <text x="0" y="79">feroxbuster</text>
+                <rect x="118" y="64" width="213.8" height="20" rx="4" fill="var(--accent)"/>
+                <text x="338" y="79" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">~950</text>
+                <text x="0" y="121">Gobuster</text>
+                <rect x="118" y="106" width="112.5" height="20" rx="4" fill="var(--accent)"/>
+                <text x="237" y="121" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">~500</text>
+                <text x="0" y="163" fill="var(--muted)" font-size="12">ffuf: FUZZ anywhere · feroxbuster: recursion</text>
+                <text x="0" y="179" fill="var(--muted)" font-size="12">Gobuster: simple, Kali-preinstalled</text>
+              </g>
+            </svg>
+            <p class="chart-note">Source: <a href="https://securityelites.com/gobuster-vs-ffuf-vs-feroxbuster-2026/">securityelites.com</a>, self-reported, local targets only.</p>
+          </div>
+        </div>
+        <div class="grid2" style="margin-top:16px">
+          <div class="card">
+            <h3 style="margin-top:0">Hashcat vs John: the numbers war</h3>
+            <p style="font-size:15px; color:var(--ink-soft); margin:0">One SEO benchmark pits Hashcat on an RTX 4090 against John on a 16-core CPU: NTLM 164,000 vs 8,200 MH/s, MD5 68,000 vs 4,100 MH/s. HackMag's practical testing counters that benchmarks "outperform actual results by several times" and are "not really stable". A careful comparison concludes the two are "complementary, not competitors": Hashcat for raw hashes and Wi-Fi, John for files and no-GPU machines.</p>
+            <p style="font-size:15px; color:var(--ink-soft)"><strong style="color:var(--ink)">Catalog decision:</strong> on Termux there is no GPU path that matters, so John is the sensible default and Hashcat is a low-priority, warn-heavy entry. GPU MH/s figures never appear in the catalog.</p>
+            <p class="src"><a href="https://securityelites.com/hashcat-vs-john-speed-comparison-2026/">SEO benchmark</a> · <a href="https://hackmag.com/stuff/hashcracking-benchmarks">HackMag scepticism</a> · <a href="https://techearl.com/hashcat-vs-john-the-ripper">techearl, complementary view</a></p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">Caido vs Burp: the trending challenger</h3>
+            <p style="font-size:15px; color:var(--ink-soft); margin:0">A practitioner head-to-head on the same target: Caido's scanner plugin found ~400 issues / 12 unique, Burp Scanner over 1,000 / 17 unique. Caido has no built-in scanner or crawler (plugins fill the gap) but is Rust, lightweight, with a modern UX. Kali packaged Caido in 2025.3.</p>
+            <p style="font-size:15px; color:var(--ink-soft)"><strong style="color:var(--ink)">Catalog decision:</strong> Burp and ZAP stay the reference; Caido is listed as "emerging, laptop-class", not as a Termux install.</p>
+            <p class="src"><a href="https://afine.com/blogs/caido-vs-burp-suite-a-penetration-testers-comparison">afine.com practitioner test</a> · <a href="https://lumicalabs.com/blog/cybersecurity/burp-suite-vs-caido-intercepting-proxy">lumicalabs feature table</a></p>
+          </div>
+        </div>
+        <div class="caveat">
+          <b>Benchmark hygiene.</b> The scanner, fuzzer and cracker numbers above come from low-authority, SEO-driven sites with no published raw data, hardware variance or repeat runs, and HackMag actively contradicts the cracker headlines. Treat them as directional practitioner folklore. And one genuine gap: <b>no head-to-head installer benchmark exists anywhere</b> (install time, failure rate, uninstall cleanliness for DarkFly vs Tool-X vs pdtm vs Kali metapackages). Publishing the first honest one is a credibility moat, see differentiator 8.
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BLUEPRINT ================= -->
+    <section id="blueprint">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">06 / THE BLUEPRINT</span>
+          <h2>Eight differentiators, ranked by impact vs effort</h2>
+          <p>What would make the new version genuinely different from the old one and every clone, in the order the research says to build them.</p>
+        </div>
+        <div class="rank-list">
+          <div class="rank"><div class="n">1</div><div><h4>Real installs with a manifest</h4><p>Install, update, uninstall and list-installed, all backed by an <span class="mono">installed.json</span> manifest recording tool, version or commit, backend, files created and dependencies. v5's core gap is that it installs nothing; pdtm proves users value install-all / update-all / list-outdated / remove in one tool. The manifest is also what makes every other safety feature possible.</p></div><div class="ie"><span class="tag green">Impact: High</span><span class="tag plain">Effort: Medium</span></div></div>
+          <div class="rank"><div class="n">2</div><div><h4>A curated catalog of 60–100, with maintenance metadata</h4><p>Kali top-10 plus the ProjectDiscovery suite plus the AD set is the product. Every entry carries <span class="mono">status</span> (maintained / stale / archived), <span class="mono">successor_to</span> and <span class="mono">last_verified</span>, turning link-rot from a silent failure into visible data. Curation is ongoing work: budget for it, and automate the checks in CI.</p></div><div class="ie"><span class="tag green">Impact: High</span><span class="tag plain">Effort: Medium</span></div></div>
+          <div class="rank"><div class="n">3</div><div><h4>Backend delegation, in a strict priority order</h4><p>Stand on signed and isolated channels instead of owning 100 bespoke install scripts. Delegate ProjectDiscovery tools to <span class="mono">pdtm</span> and Kali-packaged tools to <span class="mono">apt</span>. Record which backend was used so update and uninstall reverse the right thing. The ladder is specified below.</p></div><div class="ie"><span class="tag green">Impact: High</span><span class="tag plain">Effort: Medium</span></div></div>
+          <div class="rank"><div class="n">4</div><div><h4>Dry-run, pre-flight, resumable installs</h4><p><span class="mono">--dry-run</span> prints every command, download size and file to be written, and executes nothing. Installs are staged and journaled so an install killed mid-way (signal 9, battery, network) resumes or rolls back cleanly. Re-running install on an installed tool is a no-op success. Try it in the <a href="#simulate">simulation</a>.</p></div><div class="ie"><span class="tag green">Impact: High</span><span class="tag plain">Effort: Low–Med</span></div></div>
+          <div class="rank"><div class="n">5</div><div><h4>Search and a fuzzy picker, with full CLI parity</h4><p>v5 has no search, and numbered menus collapse well before 80 tools. <span class="mono">darkfly search nuclei</span>, scriptable subcommands with <span class="mono">--dry-run</span>, <span class="mono">--yes</span> and JSON output, Rich tables, and a questionary picker for interactive use, all on the same code path. Stay in Python: a Go rewrite would orphan the v5 codebase and shrink the Termux contributor pool.</p></div><div class="ie"><span class="tag green">Impact: Med-High</span><span class="tag plain">Effort: Low</span></div></div>
+          <div class="rank"><div class="n">6</div><div><h4>A health doctor: <span class="mono">darkfly doctor</span></h4><p>Checks Termux source and mirror sanity, Python version, free storage, the phantom-killer risk, whether each installed tool's binary still runs, and whether its upstream has been archived. It turns "it broke" GitHub issues into self-service diagnosis, the same issue pattern that produced v5's open "how do I use it" reports.</p></div><div class="ie"><span class="tag green">Impact: Med-High</span><span class="tag plain">Effort: Low</span></div></div>
+          <div class="rank"><div class="n">7</div><div><h4>A resources catalog, not just tools</h4><p>SecLists subsets, PayloadsAllTheThings, HackTricks, GTFOBins: resumable, checksummed downloads with size choices (small bundles on Termux, full on Linux; rockyou as a verified download, never bundled). Data, not code, so the install risk is minimal and the value is daily.</p></div><div class="ie"><span class="tag green">Impact: Medium</span><span class="tag plain">Effort: Low</span></div></div>
+          <div class="rank"><div class="n">8</div><div><h4>Catalog CI and a published honesty benchmark</h4><p>CI validates the catalog schema, checks every upstream URL resolves and is not archived, and smoke-tests <span class="mono">--dry-run</span> for every entry, catching link-rot continuously. Then publish measured time-to-install, failure rate and uninstall cleanliness for the top-20 catalog on a named Termux device and a named Linux VM. No competitor can copy that with a banner change.</p></div><div class="ie"><span class="tag green">Impact: Medium</span><span class="tag plain">Effort: Medium</span></div></div>
+        </div>
+
+        <div class="grid2" style="margin-top:26px; align-items:start">
+          <div class="card">
+            <h3 style="margin-top:0">Backend priority ladder</h3>
+            <div class="ladder">
+              <div class="rung"><span class="rn">1</span><span class="rb">apt / pkg</span><span class="rd">Signed package from Termux or Debian/Kali repos. Signatures verified by the package manager itself.</span></div>
+              <div class="rung"><span class="rn">2</span><span class="rb">vendor binary</span><span class="rd">Publisher's release binary for the exact OS/arch, sha256-verified where upstream publishes one, installed atomically (temp dir, then rename into place).</span></div>
+              <div class="rung"><span class="rn">3</span><span class="rb">pipx / go install</span><span class="rd">Pinned version. pipx gives each Python tool its own venv, never needs sudo, and makes uninstall reliable. This alone fixes the number-one breakage class in classic installers.</span></div>
+              <div class="rung"><span class="rn">4</span><span class="rb">git clone @pin</span><span class="rd">Last resort only, pinned to a commit, with a visible warning. Never an unpinned clone of a moving branch.</span></div>
+            </div>
+            <p class="src" style="margin-top:12px">Modelled on Homebrew's reviewed formulae and bottles, mise's "prefer backends that install a publisher's release directly", and cargo-binstall's checksum-verified atomic installs. Sources in <a href="#sources">Sources</a>.</p>
+          </div>
+          <div>
+            <h3 style="margin: 4px 0 10px">The catalog record (minimum viable schema)</h3>
+            <pre class="code">{
+  <span class="k">"id"</span>: <span class="s">"netexec"</span>, <span class="k">"name"</span>: <span class="s">"NetExec"</span>,
+  <span class="k">"aliases"</span>: [<span class="s">"nxc"</span>],
+  <span class="k">"description"</span>: <span class="s">"Network service exploitation /
+    AD assessment (successor to CrackMapExec)"</span>,
+  <span class="k">"categories"</span>: [<span class="s">"ad"</span>, <span class="s">"post-exploitation"</span>],
+  <span class="k">"license"</span>: <span class="s">"…"</span>, <span class="k">"homepage"</span>: <span class="s">"…"</span>,
+  <span class="k">"status"</span>: <span class="s">"maintained"</span>,
+  <span class="k">"successor_to"</span>: <span class="s">"crackmapexec"</span>,
+  <span class="k">"platforms"</span>: { <span class="k">"termux"</span>: true, <span class="k">"linux"</span>: true,
+    <span class="k">"gui_required"</span>: false },
+  <span class="k">"size_mb_estimate"</span>: 120,
+  <span class="k">"last_verified"</span>: <span class="s">"2026-10-23"</span>,
+  <span class="k">"install"</span>: { <span class="k">"backend"</span>: <span class="s">"pipx"</span>,
+    <span class="k">"package"</span>: <span class="s">"git+https://…@&lt;pin&gt;"</span> },
+  <span class="k">"run"</span>: <span class="s">"nxc"</span>
+}</pre>
+            <p class="src" style="margin-top:10px">One plain-JSON record per tool, in-repo and diff-able in pull requests. No obfuscated catalog, ever: that was a v4 failure mode, not a style choice.</p>
+          </div>
+        </div>
+
+        <h3>Safety checklist: ship-blockers, not nice-to-haves</h3>
+        <ul class="checklist">
+          <li><b>No curl | bash, no remote code at startup, no obfuscated catalog.</b> The catalog is plain JSON in the repo. A piped script "can serve different content when it detects a pipe", and package-manager packages are cryptographically signed while piped scripts are not signed at all.</li>
+          <li><b>Every entry carries provenance:</b> canonical upstream URL, license, maintainer or org, a <span class="mono">last_verified</span> date and a maintenance <span class="mono">status</span>. Archived tools are auto-flagged and successors linked (CrackMapExec → NetExec).</li>
+          <li><b>Pin everything;</b> verify sha256 or signatures where upstream provides them; HTTPS only.</li>
+          <li><b>Dry-run before any install,</b> and explicit confirmation for heavy (over 500 MB) or privileged installs.</li>
+          <li><b>Never root, never sudo on Termux, never add foreign APT repos</b> (the Katoolin rule), never modify anything outside the tool's own prefix.</li>
+          <li><b>Isolated per-tool installs</b> (pipx venvs, a dedicated directory per clone) plus a manifest of everything created, so uninstall is complete and list-installed is truthful.</li>
+          <li><b>Exclude bomber, spam and DoS-for-fun entries.</b> GitHub explicitly permits dual-use security technology and assumes positive intention, but not content "in direct support of unlawful attacks"; phishing and social-engineering tools sit behind an <span class="mono">offensive</span> category with a lawful-use notice at install time.</li>
+          <li><b>README carries an educational / authorised-use disclaimer,</b> plus a SECURITY.md contact and contribution rules requiring a working install test on Termux and Linux for every new entry.</li>
+        </ul>
+        <p class="src" style="margin-top:12px">Policy sources: <a href="https://docs.github.com/en/site-policy/acceptable-use-policies/github-active-malware-or-exploits">GitHub active malware or exploits policy</a> · <a href="https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies">GitHub acceptable use policies</a> · <a href="https://tferdinand.net/en/why-curl-bash-is-a-dangerous-bad-habit/">Why curl | bash is dangerous</a></p>
+      </div>
+    </section>
+
+    <!-- ================= SIMULATION ================= -->
+    <section id="simulate">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">07 / VM BASELINE + SIMULATION</span>
+          <h2>Tested in a VM, simulated before a line ships</h2>
+          <p>Two kinds of evidence. Left: the current v5, cloned and actually run in a VM for this brief, the "before" picture. Right: a simulation of the proposed CLI's dry-run behaviour, generated from the catalog blueprint above, so the design can be judged before it is built.</p>
+        </div>
+        <div class="bench">
+          <div class="card">
+            <h3 style="margin-top:0">Baseline: DarkFly v5 as it stands</h3>
+            <div class="benchline"><span class="st pass">PASS</span><span>Package installs clean from a fresh clone (<span class="mono">pip install -e .</span>)</span></div>
+            <div class="benchline"><span class="st pass">PASS</span><span>Test suite runs green: <strong>3 existing tests pass</strong></span></div>
+            <div class="benchline"><span class="st pass">PASS</span><span>CLI responds: <span class="mono">list</span>, <span class="mono">info</span> and <span class="mono">menu</span> all work</span></div>
+            <div class="benchline"><span class="st info">FACT</span><span>Catalog holds exactly <strong>8 tools</strong>: nmap, whois, dnsenum, nikto, sqlmap, hydra, john, aircrack-ng</span></div>
+            <div class="benchline"><span class="st gap">GAP</span><span>No <span class="mono">install</span> command: <span class="mono">info</span> prints suggested commands, nothing executes them</span></div>
+            <div class="benchline"><span class="st gap">GAP</span><span>No <span class="mono">search</span>: with 8 tools the menu copes; with 80 it would not</span></div>
+            <div class="benchline"><span class="st gap">GAP</span><span>No manifest, no uninstall, no dry-run: nothing records what a user has</span></div>
+            <p class="src" style="margin-top:12px">Baseline run in a local VM against the current repo state, October 2026. The proposed test regime from the blueprint: schema validation and URL/archive checks in CI on every change, dry-run smoke tests for all entries, and full install tests for Tier 0 on Termux and Linux.</p>
+          </div>
+          <div>
+            <div class="sim-controls" role="group" aria-label="Choose a simulated command">
+              <button class="sim-btn" data-sim="nuclei" aria-pressed="true">install nuclei --dry-run</button>
+              <button class="sim-btn" data-sim="netexec" aria-pressed="false">install netexec --dry-run</button>
+              <button class="sim-btn" data-sim="metasploit" aria-pressed="false">install metasploit --dry-run</button>
+              <button class="sim-btn" data-sim="seclists" aria-pressed="false">install seclists --dry-run</button>
+            </div>
+            <div class="terminal" aria-label="Simulated terminal output">
+              <div class="term-bar">
+                <span class="dot" style="background:#f87171"></span>
+                <span class="dot" style="background:#fbbf24"></span>
+                <span class="dot" style="background:#4ade80"></span>
+                <span class="t">termux · darkfly next-gen (design simulation)</span>
+              </div>
+              <div class="term-body" id="termBody"></div>
+            </div>
+            <p class="src" style="margin-top:10px">Simulated output of the <em>proposed</em> CLI, composed from the catalog schema and safety rules in this brief. Nothing here executes on your device; the point of <span class="mono">--dry-run</span> is that the real tool would behave exactly this way: show the full plan, change nothing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TERMUX ================= -->
+    <section id="termux">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">08 / TERMUX REALITIES</span>
+          <h2>The platform decides what is possible</h2>
+          <p>Most "installer randomly died" reports are platform facts the installer ignored. The new design treats these as constraints, not surprises.</p>
+        </div>
+        <div class="grid3">
+          <div class="card">
+            <h3 style="margin-top:0">Get Termux from F-Droid or GitHub</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">The Play Store build was abandoned in 2020, is frozen at 0.101, and points to dead repository mirrors. APKs and all add-ons must come from the same source, because they are signed with different keys; mixing them fails with <span class="mono">INSTALL_FAILED_UPDATE_INCOMPATIBLE</span>. A current Play listing for Android 11+ exists but is still in development with missing functionality.</p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">Signal 9 is the #1 killer</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">Android 12+'s Phantom Process Killer terminates Termux children past roughly 32 phantom processes or under heavy CPU: the infamous <span class="mono">[Process completed (signal 9)]</span>. User-side fixes exist (Android 14+ Developer Options, or ADB <span class="mono">device_config</span> settings), but the design consequence is on us: <strong style="color:var(--ink)">resumable, journaled, low-parallelism installs are mandatory</strong>, with a pre-flight warning before heavy installs.</p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">Everything lives under $PREFIX</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">Home is <span class="mono">/data/data/com.termux/files/home</span>, binaries live under <span class="mono">$PREFIX</span>, and there is no FHS, no systemd and no root. Desktop glibc binaries generally won't run on Android's Bionic libc, the classic "No such file or directory" for a file that exists. Storage permission is opt-in via <span class="mono">termux-setup-storage</span>; the installer must work fully without it.</p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">pkg is APT, and that is a feature</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)"><span class="mono">pkg</span> wraps APT with mirror selection (health-checked, weighted), a cache-freshness check and a refusal to run as root. Official repos are signed via <span class="mono">termux-keyring</span>. A good installer shells out to <span class="mono">pkg</span> and lets it verify signatures instead of reimplementing downloads. Dead mirror? The fix users need is <span class="mono">termux-change-repo</span>, and <span class="mono">doctor</span> should say so.</p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">Python 3 only, pipx always</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">Python 2 is legacy and is the single reason v4-era tools fail on a fresh install. Modern Python also blocks global <span class="mono">pip install</span> ("externally-managed environment"), the exact wall a practitioner hit installing NetExec on HTB Pwnbox, and solved with pipx. The whole tool targets Python 3.10+, and every Python tool it installs is pipx-isolated.</p>
+          </div>
+          <div class="card">
+            <h3 style="margin-top:0">What breaks most often</h3>
+            <p style="margin:0; font-size:15px; color:var(--ink-soft)">In order: stale Play-Store Termux with dead mirrors; dead or slow mirrors failing <span class="mono">pkg update</span>; Python 2 scripts; global pip dependency conflicts; signal-9 kills mid-build; desktop-glibc or x86 binaries on arm64; tools needing root, monitor mode, systemd or a GUI; and multi-GB "install everything" runs exhausting phone storage (AllHackingTools alone claims ~2.2 GB).</p>
+          </div>
+        </div>
+        <p class="src" style="margin-top:12px">Sources: <a href="https://termux-wiki.vercel.app/package-management">Termux package management (wiki)</a> · <a href="https://docs.andronix.app/troubleshooting/signal-9">Andronix, phantom process killer</a> · <a href="https://medium.com/@ch4os1/installing-the-latest-netexec-on-pwnbox-a-clean-pipx-method-69c090701630">NetExec via pipx on Pwnbox</a> · <a href="https://cybergodoo7.wordpress.com/2026/10/21/install-termux-android-official-sources/">Termux community: prefer repo packages over installer scripts</a></p>
+      </div>
+    </section>
+
+    <!-- ================= TRAPS ================= -->
+    <section id="traps">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">09 / TRAPS</span>
+          <h2>Features to refuse, on the record</h2>
+          <p>Each of these sounds like an upgrade. Each is refused or deferred for a stated reason, so the decision survives the next "why don't we just…" conversation.</p>
+        </div>
+        <div class="trap-list">
+          <div class="trap"><h4>An "install all 530" button</h4><p>Multi-GB, hours long, maximal signal-9 and storage failure, and most entries will be stale. Kali can offer <span class="mono">kali-linux-everything</span> only because a real distro repo stands behind it. A clone-script cannot honour it.</p></div>
+          <div class="trap"><h4>Docker, Exegol or Nix as the Termux mechanism</h4><p>No usable Docker daemon or Nix store model on unrooted Android, and both are storage- and complexity-heavy. Copy their pinning, manifest and isolation <em>principles</em> only.</p></div>
+          <div class="trap"><h4>A full-screen TUI or Go rewrite first</h4><p>It delays the one thing that matters, working installs, and a Go/Bubble Tea rewrite orphans the Python v5 code and its contributor pool. Textual can come later as an optional front-end.</p></div>
+          <div class="trap"><h4>On-device promises that need a desktop</h4><p>GUI tools, the BloodHound server, GPU Hashcat and monitor-mode Wi-Fi need a desktop, a database, a GPU or special hardware. List them as "desktop companion" info entries; never fake-install them on Termux.</p></div>
+          <div class="trap"><h4>An autonomous AI agent in v1</h4><p>Kali is only now adding MCP/AI servers, and practitioner sources call LLM tooling "still early, still maturing". An autonomous executor multiplies the safety surface: prompt-driven arbitrary commands and API-key exfiltration. Later, opt-in and dry-run-gated, at most.</p></div>
+          <div class="trap"><h4>Parallel-download acceleration as a headline</h4><p>apt-fast-style tricks only speed the download phase and risk mirror or signature shortcuts. Mobile networks and the phantom-killer limit dominate Termux install time anyway.</p></div>
+          <div class="trap"><h4>SMS / DDoS / phishing-bomber categories "for parity"</h4><p>Policy risk under GitHub's acceptable-use rules, reputational risk, and zero practitioner demand. Their absence is a differentiator.</p></div>
+          <div class="trap"><h4>Winning on tool count</h4><p>The clone field is saturated with 370-to-530-tool menus. BlackArch shows what a huge catalog actually costs: a distro, a keyring and maintainers per package. Curation is the moat; count is the trap.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= OPEN QUESTIONS ================= -->
+    <section id="open">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">10 / OPEN QUESTIONS</span>
+          <h2>What the research could not verify</h2>
+          <p>Marked plainly, because a brief that hides its gaps produces a README that repeats them.</p>
+        </div>
+        <div class="openq">
+          <div class="q"><b>Tool-X's real star count and last-commit date are unknown.</b> Tutorials from 2020–2025 are abundant, but no primary GitHub fetch for the canonical repo was obtained, and its clone URL drifts between authors. Do not publish a Tool-X star number without a fresh primary fetch.</div>
+          <div class="q"><b>Reddit and Null Byte are second-hand only.</b> Index searches for r/netsec and r/Pentesting returned aggregators, not primary threads, and no direct Null Byte installer article was retrieved. Community sentiment in this brief is reported as consensus, and neither should be cited as primary evidence in marketing copy without a direct fetch.</div>
+          <div class="q"><b>v5's tests/CI: substantive or not?</b> The research flagged a discrepancy: v5's README lists a <span class="mono">tests/</span> directory, workflows and pytest instructions, against the assumption of "no tests, no CI". The VM baseline for this brief confirms tests exist and pass (3/3), but whether CI runs them on every push was not verified in-repo.</div>
+          <div class="q"><b>All speed benchmarks are folklore-grade.</b> Self-reported by low-authority sites, no raw data, no replication, and partly contradicted by HackMag's testing. Directional only, never to be copied into the catalog as fact.</div>
+          <div class="q"><b>No installer benchmark exists.</b> Nobody has published install time, failure rate or uninstall cleanliness for DarkFly vs Tool-X vs pdtm vs Kali metapackages. Any such numbers in a future README must be measured (differentiator 8), not sourced.</div>
+          <div class="q"><b>GitHub figures are index readings, not live-verified.</b> The research browser could not resolve github.com in its first pass, so star and fork counts are point-in-time web-index readings from 23 Oct 2026 and will drift.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SOURCES ================= -->
+    <section id="sources">
+      <div class="wrap">
+        <div class="sec-head">
+          <span class="no">11 / SOURCES</span>
+          <h2>Everything above traces to these</h2>
+          <p>All sources read 23 Oct 2026 via the web index. Benchmark sources are flagged low-authority where they appear in the text.</p>
+        </div>
+        <p class="src-group">DarkFly &amp; the classic clones</p>
+        <ul class="src-list">
+          <li><a href="https://github.com/Ranginang67/DarkFly-Tool">DarkFly original (Ranginang67)</a></li>
+          <li><a href="https://github.com/reblox01/DarkFly-Tool">DarkFly v5 fork (reblox01)</a></li>
+          <li><a href="https://prodsens.live/2025/04/27/how-to-install-377-ethical-hacking-tools-in-termux-with-tool-x/">Tool-X tutorial, 377 tools (prodsens.live)</a></li>
+          <li><a href="https://deepwiki.com/mishakorzik/AllHackingTools">AllHackingTools overview (DeepWiki)</a></li>
+          <li><a href="https://deepwiki.com/4lbH4cker/ALHacking/5-system-architecture">ALHacking architecture (DeepWiki)</a></li>
+          <li><a href="https://www.fosslinux.com/6751/how-to-install-kali-linux-tools-using-katoolin-on-ubuntu-18-04-lts.htm">Katoolin deprecation (FOSSLinux)</a></li>
+          <li><a href="https://www.tecmint.com/install-kali-linux-tools/">Katoolin's modern replacement: Docker (Tecmint)</a></li>
+        </ul>
+        <p class="src-group">Distributions &amp; practitioner-grade managers</p>
+        <ul class="src-list">
+          <li><a href="https://www.kali.org/docs/general-use/metapackages/">Kali metapackages (official)</a></li>
+          <li><a href="http://www.blackarch.org/guide.pdf">BlackArch guide (official)</a></li>
+          <li><a href="https://docs.projectdiscovery.io/quickstart">ProjectDiscovery pdtm quickstart (official)</a></li>
+          <li><a href="https://deepwiki.com/projectdiscovery/pdtm/5-architecture">pdtm architecture (DeepWiki)</a></li>
+          <li><a href="https://docs.exegol.com/blog/compliance-as-a-feature">Exegol: compliance and reproducibility</a></li>
+          <li><a href="https://bltsec.com/blog/exegol/">Exegol practitioner account (bltsec)</a></li>
+        </ul>
+        <p class="src-group">Practitioner blogs &amp; community benchmarks</p>
+        <ul class="src-list">
+          <li><a href="https://www.blackhillsinfosec.com/offensive-tooling-cheatsheets/">BHIS Offensive Tooling Cheatsheets</a></li>
+          <li><a href="https://github.com/danielmiessler/SecLists">SecLists (Miessler / Haddix / g0tmi1k)</a></li>
+          <li><a href="https://www.helpnetsecurity.com/2023/08/02/bloodhound-ce-open-source-penetration-testing-tool/">BloodHound CE / SpecterOps (Help Net Security)</a></li>
+          <li><a href="https://www.stationx.net/netexec-cheat-sheet/">NetExec, successor to CrackMapExec (StationX)</a></li>
+          <li><a href="http://0ut3r.space/2026/09/25/ad-pentest-playbook/index.html">AD pentest playbook: pin and record versions</a></li>
+          <li><a href="https://nikhilsec.com/blog/bug-bounty-toolkit-and-workflow">Bug-bounty toolkit workflow: pdtm / pipx / apt</a></li>
+          <li><a href="https://www.eccouncil.org/cybersecurity-exchange/ethical-hacking/best-ethical-hacking-tools/">EC-Council beginner toolkit</a></li>
+          <li><a href="https://www.ccslearningacademy.com/ethical-hacking-tools/">AI/LLM pentest tools, 2026 survey</a></li>
+          <li><a href="https://securityelites.com/nmap-vs-masscan-vs-rustscan-2026/">Scanner comparison (low authority)</a></li>
+          <li><a href="https://securityelites.com/gobuster-vs-ffuf-vs-feroxbuster-2026/">Fuzzer comparison (low authority)</a></li>
+          <li><a href="https://hackmag.com/stuff/hashcracking-benchmarks">Hashcracking benchmark scepticism (HackMag)</a></li>
+          <li><a href="https://afine.com/blogs/caido-vs-burp-suite-a-penetration-testers-comparison">Caido vs Burp, practitioner test (afine)</a></li>
+        </ul>
+        <p class="src-group">Modern patterns, safety &amp; Termux</p>
+        <ul class="src-list">
+          <li><a href="https://docs.brew.sh/Homebrew-Security-and-Supply-Chain">Homebrew security and supply chain</a></li>
+          <li><a href="https://pypi.org/project/pipx/0.13.0.1/">pipx (PyPI)</a></li>
+          <li><a href="https://mise.jdx.dev/dev-tools/backends/asdf.html">mise backends: prefer publisher releases</a></li>
+          <li><a href="http://lib.rs/crates/cargo-binstall">cargo-binstall: verified, atomic installs</a></li>
+          <li><a href="https://docs.github.com/en/site-policy/acceptable-use-policies/github-active-malware-or-exploits">GitHub: active malware or exploits policy</a></li>
+          <li><a href="https://termux-wiki.vercel.app/package-management">Termux package management (wiki)</a></li>
+          <li><a href="https://docs.andronix.app/troubleshooting/signal-9">Phantom process killer / signal 9 (Andronix)</a></li>
+          <li><a href="https://techloverhd.com/2026/10/termux-apk-download-install-linux-desktop-android-guide/">Termux sources: Play vs F-Droid/GitHub</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <p><strong>DarkFly Next-Gen: research &amp; design brief.</strong> Compiled 23 October 2026 from a deep-research pass over the installer landscape, practitioner blogs and community benchmarks, plus a VM baseline test of the current v5. Figures are as read on that date and hedged where the sources hedge. The next step this brief argues for: build differentiators 1–4 (real installs with a manifest, the curated catalog, backend delegation, dry-run/resume), and measure the rest.</p>
+      </div>
+    </footer>
+
+    <script>
+      /* ============ Catalog data (from the research tiers) ============ */
+      var TERMUX = {
+        ok:   { label: "Termux ✓", cls: "green" },
+        warn: { label: "Termux: caution", cls: "amber" },
+        desk: { label: "Desktop only", cls: "red" },
+        exp:  { label: "Experimental", cls: "amber" }
+      };
+      var TOOLS = [
+        /* Tier 0 — core */
+        { n: "Nmap", t: 0, c: "Scanning", b: "apt / pkg", x: "ok", d: "The timeless core of every source's list. Depth and NSE scripting standard." },
+        { n: "Netcat", t: 0, c: "Networking", b: "apt / pkg", x: "ok", d: "In BHIS's nine peer-reviewed cheatsheet tools. The swiss-army pipe." },
+        { n: "tshark", t: 0, c: "Traffic analysis", b: "apt / pkg", x: "ok", d: "Wireshark's CLI. The GUI is not a Termux workflow; tshark is the honest entry." },
+        { n: "Metasploit Framework", t: 0, c: "Exploitation", b: "apt / pkg", x: "warn", d: "In Kali's top 10 and the EC-Council core. Heavy: the installer must warn on storage and install time." },
+        { n: "Burp Suite Community", t: 0, c: "Web proxy", b: "desktop", x: "desk", d: "Reference intercepting proxy, laptop-class GUI. Listed as a desktop companion entry, never fake-installed on Termux." },
+        { n: "OWASP ZAP", t: 0, c: "Web proxy / scanner", b: "desktop", x: "desk", d: "The open-source reference proxy alongside Burp. Desktop companion entry." },
+        { n: "sqlmap", t: 0, c: "Web / SQLi", b: "apt / pkg", x: "ok", d: "Kali top-10 member and a BHIS Core Deck web staple." },
+        { n: "Hydra", t: 0, c: "Credentials", b: "apt / pkg", x: "ok", d: "Kali top-10 member. The standard online password attacker." },
+        { n: "John the Ripper", t: 0, c: "Password cracking", b: "apt / pkg", x: "ok", d: "The sensible Termux default cracker: files and formats, no GPU required." },
+        { n: "Hashcat", t: 0, c: "Password cracking", b: "apt / pkg", x: "warn", d: "Low priority on Termux: there is no GPU path that matters, and GPU benchmark numbers never appear in the catalog." },
+        { n: "Aircrack-ng", t: 0, c: "Wireless", b: "apt / pkg", x: "warn", d: "Kali top-10 member, flagged: real use needs monitor-mode hardware a phone usually lacks." },
+        { n: "Responder", t: 0, c: "AD / network", b: "pipx", x: "ok", d: "Kali top-10 member; part of the canonical AD playbook set." },
+        { n: "Impacket", t: 0, c: "AD / network", b: "pipx", x: "ok", d: "In BHIS's nine and every AD playbook. pipx-isolated, never a global pip install." },
+        { n: "Nikto", t: 0, c: "Web scanning", b: "apt / pkg", x: "ok", d: "The classic web server scanner in the HTB-style workflow chain." },
+        { n: "Gobuster", t: 0, c: "Web fuzzing", b: "apt / pkg", x: "ok", d: "The simple, Kali-preinstalled fuzzer of the benchmark trio." },
+        { n: "searchsploit", t: 0, c: "Exploitation", b: "apt / pkg", x: "ok", d: "Exploit-DB's offline search. Cheap, safe, used daily in HTB-style work." },
+        /* Tier 1 — modern layer */
+        { n: "Nuclei", t: 1, c: "Vuln scanning", b: "pdtm", x: "ok", d: "The modern layer's centrepiece, with nuclei-templates. Delegated to pdtm, not re-cloned." },
+        { n: "Subfinder", t: 1, c: "Recon", b: "pdtm", x: "ok", d: "Subdomain discovery; the recon phase opener in current workflows." },
+        { n: "httpx", t: 1, c: "Recon", b: "pdtm", x: "ok", d: "Fast HTTP probing of discovered hosts." },
+        { n: "Naabu", t: 1, c: "Scanning", b: "pdtm", x: "ok", d: "ProjectDiscovery's port scanner, paired with Nmap for depth." },
+        { n: "Katana", t: 1, c: "Web crawling", b: "pdtm", x: "ok", d: "Modern crawler for the web phase." },
+        { n: "dnsx", t: 1, c: "Recon", b: "pdtm", x: "ok", d: "DNS toolkit completing the ProjectDiscovery recon set." },
+        { n: "ffuf", t: 1, c: "Web fuzzing", b: "GitHub release", x: "ok", d: "FUZZ anywhere: headers, body, vhost. Fastest in the local folklore benchmark (~1,400 req/s)." },
+        { n: "feroxbuster", t: 1, c: "Web fuzzing", b: "apt / pkg", x: "ok", d: "Automatic recursion and wildcard filtering; the second fuzzer of the trio." },
+        { n: "RustScan", t: 1, c: "Scanning", b: "GitHub release", x: "ok", d: "Seconds-fast discovery, then hands off to Nmap -sV -sC. Ships with that combined workflow documented." },
+        { n: "NetExec", t: 1, c: "AD / post-exploitation", b: "pipx", x: "ok", d: "Successor to CrackMapExec (archived 2023). The catalog lists NetExec, never the dead name. Proposed schema example in this brief." },
+        { n: "bloodhound-python", t: 1, c: "AD collection", b: "pipx", x: "ok", d: "The collector is the Termux-appropriate entry. The BloodHound server runs on a laptop, flagged in the entry." },
+        { n: "Certipy", t: 1, c: "AD / certificates", b: "pipx", x: "ok", d: "Part of the canonical AD set: Impacket, NetExec, Certipy, BloodHound, Responder." },
+        { n: "PEASS-ng", t: 1, c: "Post-exploitation", b: "GitHub release", x: "ok", d: "LinPEAS / WinPEAS privilege-escalation enumeration, the post-ex phase standard." },
+        { n: "enum4linux-ng", t: 1, c: "AD enumeration", b: "pipx", x: "ok", d: "The maintained successor in the AD workflow chain." },
+        { n: "Ligolo-ng", t: 1, c: "Pivoting", b: "GitHub release", x: "ok", d: "Modern tunnelling for the pivot phase, replacing proxychains-era habits." },
+        { n: "Chisel", t: 1, c: "Pivoting", b: "GitHub release", x: "ok", d: "Single-binary tunnelling, paired with Ligolo in the workflow chain." },
+        { n: "Evil-WinRM", t: 1, c: "Post-exploitation", b: "pipx", x: "ok", d: "WinRM shell for post-exploitation; Kali 2025.4 added the evil-winrm-py variant." },
+        { n: "Amass", t: 1, c: "Recon", b: "apt / pkg", x: "ok", d: "Attack-surface mapping in the bug-bounty workflow (apt route per practitioner guides)." },
+        { n: "theHarvester", t: 1, c: "Recon / OSINT", b: "pipx", x: "ok", d: "Email and subdomain OSINT, the classic recon opener." },
+        { n: "TruffleHog", t: 1, c: "Secrets scanning", b: "GitHub release", x: "ok", d: "Finds leaked credentials in repos and filesystems." },
+        { n: "DalFox", t: 1, c: "Web / XSS", b: "go install", x: "ok", d: "Modern XSS scanner, named with XSStrike in the research's modern layer." },
+        { n: "SSTImap", t: 1, c: "Web / SSTI", b: "pipx", x: "ok", d: "Server-side template injection exploitation, modern-layer web entry." },
+        { n: "WPScan", t: 1, c: "Web / WordPress", b: "gem", x: "ok", d: "WordPress security scanner (with WPProbe named alongside it in the research)." },
+        /* Tier 2 — resources */
+        { n: "SecLists", t: 2, c: "Wordlists & lists", b: "apt / pkg", x: "warn", d: "The most-starred artefact in the field (74,307 ★). On Termux: small selected bundles, not the multi-GB full clone. Resumable downloads, wget -c style." },
+        { n: "PayloadsAllTheThings", t: 2, c: "Payloads reference", b: "download", x: "ok", d: "Payload and bypass reference, in the same resource role as SecLists: data, not code." },
+        { n: "HackTricks", t: 2, c: "Reference", b: "download", x: "ok", d: "Offline reference for techniques, shipped as a resource entry." },
+        { n: "GTFOBins / LOLBAS", t: 2, c: "Reference", b: "download", x: "ok", d: "Living-off-the-land binary references for post-exploitation work." },
+        { n: "DirBuster wordlists", t: 2, c: "Wordlists", b: "apt / pkg", x: "ok", d: "The lists the fuzzers eat. Wordlist choice dominates fuzzing results." },
+        { n: "rockyou", t: 2, c: "Wordlists", b: "verified download", x: "warn", d: "Offered only as a resumable, checksum-verified download. Never bundled." },
+        /* Tier 3 — emerging */
+        { n: "Caido", t: 3, c: "Web proxy", b: "desktop", x: "desk", d: "The trending Burp challenger (Rust, lightweight); Kali packaged it in 2025.3. Emerging, laptop-class." },
+        { n: "Detect It Easy", t: 3, c: "File analysis", b: "desktop", x: "desk", d: "Added by Kali in 2025.3. Trending tier, expect churn." },
+        { n: "krbrelayx", t: 3, c: "AD", b: "git (pinned)", x: "exp", d: "Kerberos relay tooling from Kali 2025.3's additions and the AD playbook set." },
+        { n: "AzureHound", t: 3, c: "Cloud / AD", b: "GitHub release", x: "exp", d: "BloodHound's Azure collector; Kali 2025.2 addition." },
+        { n: "Rubeus", t: 3, c: "AD / Kerberos", b: "desktop", x: "desk", d: "Kali 2025.2 addition; Windows-side tooling, desktop companion." },
+        { n: "GitXray", t: 3, c: "Recon", b: "pipx", x: "exp", d: "GitHub reconnaissance, added by Kali in 2025.2." },
+        { n: "ScoutSuite", t: 3, c: "Cloud auditing", b: "pipx", x: "exp", d: "Cloud security auditing from the BHIS Core Deck cloud set." },
+        { n: "Pacu", t: 3, c: "Cloud exploitation", b: "pipx", x: "exp", d: "AWS exploitation framework in the BHIS cloud set." },
+        { n: "GraphRunner", t: 3, c: "Cloud / M365", b: "desktop", x: "desk", d: "In BHIS's nine cheatsheet tools and their cloud deck. PowerShell-side, desktop companion." },
+        { n: "ROADtools", t: 3, c: "Cloud / Azure AD", b: "pipx", x: "exp", d: "Azure AD exploration from the BHIS Core Deck." },
+        { n: "BloodHound CE", t: 3, c: "AD analysis", b: "desktop", x: "desk", d: "Containerised server (Neo4j + app). A trap to install on-device; collectors live in Tier 1." },
+        { n: "shell-gpt", t: 3, c: "AI assistant", b: "pipx", x: "exp", d: "AI/MCP sub-tier: behind the experimental tag, with API-key and privacy warnings. It phones home to model providers by design." },
+        { n: "mcp-kali-server", t: 3, c: "AI / MCP", b: "pipx", x: "exp", d: "Kali added MCP servers in 2025.3. Experimental; never an autonomous executor by default." },
+        { n: "HexStrike-AI", t: 3, c: "AI / MCP", b: "git (pinned)", x: "exp", d: "AI-agent security tooling from Kali 2025.4. Experimental tag, dry-run-gated if it ever ships." },
+        { n: "Garak", t: 3, c: "LLM red team", b: "pipx", x: "exp", d: "LLM vulnerability scanner. Practitioner survey: LLM tooling is 'still early, still maturing, coming fast'." },
+        { n: "PromptFoo", t: 3, c: "LLM red team", b: "npm", x: "exp", d: "LLM evaluation and red-teaming, paired with Garak in the 2026 survey." }
+      ];
+      var TIER_NAMES = { 0: "Tier 0 · Core", 1: "Tier 1 · Modern", 2: "Tier 2 · Resource", 3: "Tier 3 · Emerging" };
+      var catGrid = document.getElementById("catGrid");
+      var catCount = document.getElementById("catCount");
+      var catSearch = document.getElementById("catSearch");
+      var activeTier = "all";
+
+      function renderCatalog() {
+        var q = (catSearch.value || "").toLowerCase().trim();
+        var shown = TOOLS.filter(function (t) {
+          if (activeTier !== "all" && String(t.t) !== activeTier) return false;
+          if (!q) return true;
+          return (t.n + " " + t.c + " " + t.b + " " + t.d).toLowerCase().indexOf(q) !== -1;
+        });
+        catGrid.innerHTML = shown.map(function (t) {
+          var tx = TERMUX[t.x];
+          return '<article class="tool"><h4>' + t.n + '</h4>' +
+            '<div class="cat">' + t.c + '</div><p>' + t.d + '</p>' +
+            '<div class="meta"><span class="tag plain">' + TIER_NAMES[t.t] + '</span>' +
+            '<span class="tag plain">' + t.b + '</span>' +
+            '<span class="tag ' + tx.cls + '">' + tx.label + '</span></div></article>';
+        }).join("");
+        catCount.textContent = "Showing " + shown.length + " of " + TOOLS.length + " proposed entries" +
+          (activeTier !== "all" ? " in " + TIER_NAMES[Number(activeTier)] : "") + (q ? ' matching "' + q + '"' : "") + ".";
+      }
+      document.querySelectorAll(".chip").forEach(function (chip) {
+        chip.addEventListener("click", function () {
+          document.querySelectorAll(".chip").forEach(function (c) { c.setAttribute("aria-pressed", "false"); });
+          chip.setAttribute("aria-pressed", "true");
+          activeTier = chip.getAttribute("data-tier");
+          renderCatalog();
+        });
+      });
+      catSearch.addEventListener("input", renderCatalog);
+      renderCatalog();
+
+      /* ============ Dry-run simulation ============ */
+      var SIMS = {
+        nuclei:
+          '<span class="cmd">$ darkfly install nuclei --dry-run</span>\n' +
+          '<span class="dim">Resolving catalog entry: nuclei (Tier 1 · vuln scanning)</span>\n' +
+          '  backend        <span class="ok">pdtm</span> <span class="dim">(delegated to ProjectDiscovery, not re-cloned)</span>\n' +
+          '  action         pdtm -i nuclei\n' +
+          '  download       pre-built GitHub release binary, this device arch\n' +
+          '  verify         sha256 checked against the release manifest\n' +
+          '  writes         ~/.local/bin/nuclei  +  1 manifest record\n' +
+          '  also installs  nuclei-templates (community templates)\n' +
+          '  network        github.com, release CDN\n' +
+          '<span class="ok">Dry run: plan only. Nothing downloaded, nothing installed.</span>\n' +
+          '<span class="dim">Run without --dry-run to execute. Manifest: ~/.local/share/darkfly/installed.json</span>',
+        netexec:
+          '<span class="cmd">$ darkfly install netexec --dry-run</span>\n' +
+          '<span class="dim">Resolving catalog entry: netexec (Tier 1 · ad) — successor of crackmapexec (archived 2023)</span>\n' +
+          '  backend        <span class="ok">pipx</span> <span class="dim">(isolated venv, never global pip)</span>\n' +
+          '  action         pipx install git+https://…@&lt;pin&gt;\n' +
+          '  size estimate  ~120 MB on disk\n' +
+          '  verify         pinned commit from catalog record, verified 2026-10-23\n' +
+          '  writes         ~/.local/share/pipx/venvs/netexec  +  ~/.local/bin/nxc  +  1 manifest record\n' +
+          '  run command    nxc\n' +
+          '<span class="ok">Dry run: plan only. Nothing downloaded, nothing installed.</span>',
+        metasploit:
+          '<span class="cmd">$ darkfly install metasploit --dry-run</span>\n' +
+          '<span class="dim">Resolving catalog entry: metasploit-framework (Tier 0 · exploitation)</span>\n' +
+          '  backend        <span class="ok">pkg (apt)</span> <span class="dim">signed Termux repo package</span>\n' +
+          '  action         pkg install metasploit\n' +
+          '  <span class="warn">⚠ heavy install:</span> large download, long build, real signal-9 risk\n' +
+          '  <span class="warn">⚠ pre-flight:</span> charge the phone, keep Termux in the foreground,\n' +
+          '     and know installs are journaled, so a kill resumes instead of corrupting\n' +
+          '  writes         $PREFIX packages  +  1 manifest record\n' +
+          '<span class="ok">Dry run: plan only. In a real run, this warning requires explicit confirmation.</span>',
+        seclists:
+          '<span class="cmd">$ darkfly install seclists --dry-run</span>\n' +
+          '<span class="dim">Resolving catalog entry: seclists (Tier 2 · resource, not a tool)</span>\n' +
+          '  backend        <span class="ok">pkg (apt)</span> <span class="dim">signed package route offered by upstream</span>\n' +
+          '  <span class="warn">⚠ size choice required:</span> full lists run to multiple GB\n' +
+          '     [1] small bundle: top wordlists + DirBuster lists  <span class="dim">(Termux default)</span>\n' +
+          '     [2] full SecLists  <span class="dim">(Linux, or Termux with space confirmed)</span>\n' +
+          '  download       resumable (wget -c style), checksum-verified\n' +
+          '  writes         ~/darkfly/resources/seclists  +  1 manifest record\n' +
+          '<span class="ok">Dry run: plan only. Resources are data, not code: lowest-risk installs in the catalog.</span>'
+      };
+      var termBody = document.getElementById("termBody");
+      function runSim(key) {
+        termBody.innerHTML = SIMS[key];
+        document.querySelectorAll(".sim-btn").forEach(function (b) {
+          b.setAttribute("aria-pressed", b.getAttribute("data-sim") === key ? "true" : "false");
+        });
+      }
+      document.querySelectorAll(".sim-btn").forEach(function (b) {
+        b.addEventListener("click", function () { runSim(b.getAttribute("data-sim")); });
+      });
+      runSim("nuclei");
+    </script>
+  </body>
+</html>
